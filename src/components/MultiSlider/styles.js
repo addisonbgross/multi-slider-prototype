@@ -26,9 +26,9 @@ export default makeStyles(theme => ({
     paddingTop: 40,
   },
   chart: {
-    width: '30%',
-    backgroundColor: '#eee',
-    borderRadius: '50%',
+    '& svg': {
+      overflow: 'visible',
+    },
   },
   rules: {
     '& > *': {

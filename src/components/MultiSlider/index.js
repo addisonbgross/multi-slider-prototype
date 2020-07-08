@@ -4,6 +4,9 @@ import Card from '@material-ui/core/Card';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
 
+// chart
+import {Cell, Pie, PieChart} from 'recharts';
+
 // rules
 import DoneOutlineTwoToneIcon from '@material-ui/icons/DoneOutlineTwoTone';
 import List from '@material-ui/core/List';
@@ -12,8 +15,35 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 import useStyles from './styles';
 
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
 export default function MultiSlider({data, onChange}) {
   const classes = useStyles();
+
+  const currentTotal = Object.values(data).reduce(
+    (total, value) => (total += value),
+  );
+
+  const chartData = Object.keys(data).map(key => ({
+    name: key,
+    value: data[key],
+  }));
+  chartData.push({name: '', value: 1 - currentTotal});
+
+  const getChartLabel = ({index}) => {
+    if (chartData[index].value > 0) {
+      return chartData[index].name;
+    }
+  };
+
+  const getChartSection = (entry, index) => {
+    let color = COLORS[index % COLORS.length];
+    if (index === chartData.length - 1) {
+        color = '#eee';
+    }
+
+    return <Cell key={`cell-${index}`} fill={color} />;
+  };
 
   return (
     <Box className={classes.container}>
@@ -61,11 +91,19 @@ export default function MultiSlider({data, onChange}) {
             </Box>
 
             <Box className={classes.chart}>
-              {Math.trunc(
-                Object.values(data).reduce((total, value) => (total += value)) *
-                  100,
-              )}
-              %
+              <PieChart width={300} height={300}>
+                <Pie
+                  labelLine={false}
+                  label={getChartLabel}
+                  innerRadius={80}
+                  outerRadius={100}
+                  data={chartData}
+                  dataKey="value"
+                  isAnimationActive={false}>
+                  {chartData.map(getChartSection)}
+                </Pie>
+              </PieChart>
+              {Math.trunc(currentTotal * 100)}%
             </Box>
           </Box>
         </Box>
@@ -78,9 +116,7 @@ export default function MultiSlider({data, onChange}) {
         <List className={classes.rules}>
           <ListItem>
             <ListItemIcon>
-              {Object.values(data).reduce(
-                (total, value) => (total += value),
-              ) >= 1 && <DoneOutlineTwoToneIcon />}
+              {currentTotal >= 1 && <DoneOutlineTwoToneIcon />}
             </ListItemIcon>
             All sliders must sum to 100%
           </ListItem>
