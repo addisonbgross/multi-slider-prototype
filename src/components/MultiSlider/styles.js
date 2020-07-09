@@ -35,10 +35,14 @@ export default makeStyles(theme => ({
     minHeight: 256,
   },
   sliders: {
-    width: '70%',
+    width: '65%',
     padding: 20,
     paddingTop: 40,
     transform: 'translateX(0)',
+
+    '& > *': {
+      marginBottom: 20,
+    },
 
     '& .MuiSlider-thumb': {
       width: 24,
@@ -53,9 +57,20 @@ export default makeStyles(theme => ({
     },
   },
   chart: {
+    position: 'relative',
     '& svg': {
+      // to ensure the chart labels show fully
       overflow: 'visible',
     },
+  },
+  chartTotal: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    width: 90,
+    height: 70,
+    marginLeft: -45,
+    marginTop: -35,
   },
   rules: {
     '& > *': {

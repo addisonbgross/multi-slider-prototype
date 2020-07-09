@@ -18,7 +18,7 @@ import useStyles from './styles';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-export default function MultiSlider({data, onChange, sliderAtLimit}) {
+export default function MultiSlider({data, onChange, onDoubleClick, sliderAtLimit, rules}) {
   const classes = useStyles();
 
   const currentTotal = Object.values(data).reduce(
@@ -40,8 +40,8 @@ export default function MultiSlider({data, onChange, sliderAtLimit}) {
   const getChartSection = (entry, index) => {
     let color = COLORS[index % COLORS.length];
     if (index === 0) {
-        // empty section
-        color = '#eee';
+      // empty section
+      color = '#eee';
     }
 
     return <Cell key={`cell-${index}`} fill={color} />;
@@ -67,6 +67,7 @@ export default function MultiSlider({data, onChange, sliderAtLimit}) {
           <Box
             className={classes.wrapper}
             display="flex"
+            flexWrap="wrap"
             justifyContent="space-between">
             <Box
               display="flex"
@@ -75,13 +76,16 @@ export default function MultiSlider({data, onChange, sliderAtLimit}) {
               {Object.keys(data).map(key => (
                 <Box>
                   <Slider
-                    className={clsx({ [classes.sliderLimit]: key === sliderAtLimit })}
+                    className={clsx({
+                      [classes.sliderLimit]: key === sliderAtLimit,
+                    })}
                     orientation="vertical"
                     aria-labelledby={`multi-slider-${key}`}
                     value={data[key] * 100}
                     onChange={(event, position) =>
                       onChange(key, position / 100)
                     }
+                    onDoubleClick={() => onDoubleClick(key)}
                   />
                   <Typography variant="body1" id={`multi-slider-${key}`}>
                     {key}
@@ -100,7 +104,7 @@ export default function MultiSlider({data, onChange, sliderAtLimit}) {
                   label={getChartLabel}
                   startAngle={-270}
                   endAngle={90}
-                  innerRadius={80}
+                  innerRadius={90}
                   outerRadius={100}
                   data={chartData}
                   dataKey="value"
@@ -108,7 +112,13 @@ export default function MultiSlider({data, onChange, sliderAtLimit}) {
                   {chartData.map(getChartSection)}
                 </Pie>
               </PieChart>
-              {Math.trunc(currentTotal * 100)}%
+
+              <Box className={classes.chartTotal}>
+                <Typography variant="h4">
+                  {Math.trunc(currentTotal * 100)}%
+                </Typography>
+                <Typography variant="body1">/ 100%</Typography>
+              </Box>
             </Box>
           </Box>
         </Box>
@@ -121,23 +131,31 @@ export default function MultiSlider({data, onChange, sliderAtLimit}) {
         <List className={classes.rules}>
           <ListItem>
             <ListItemIcon>
-              {currentTotal >= 1 && <DoneOutlineTwoToneIcon />}
+              {rules.total >= 1 && <DoneOutlineTwoToneIcon />}
             </ListItemIcon>
             All sliders must sum to 100%
           </ListItem>
 
           <ListItem>
             <ListItemIcon>
-              {currentTotal < 1 && <DoneOutlineTwoToneIcon />}
+              {rules.total < 1 && <DoneOutlineTwoToneIcon />}
             </ListItemIcon>
-            An empty section is added to the chart if the sliders do not sum to 100%
+            An empty section is added to the chart if the sliders do not sum to
+            100%
           </ListItem>
 
           <ListItem>
             <ListItemIcon>
-              {sliderAtLimit && <DoneOutlineTwoToneIcon />}
+              {rules.sliderAtLimit && <DoneOutlineTwoToneIcon />}
             </ListItemIcon>
             Sliders will wobble if attempting to exceed a sum of 100%
+          </ListItem>
+
+          <ListItem>
+            <ListItemIcon>
+              {rules.doubleClicked && <DoneOutlineTwoToneIcon />}
+            </ListItemIcon>
+            Double clicking a slider will set that region to 100%
           </ListItem>
         </List>
       </Card>
