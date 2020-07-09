@@ -22,10 +22,12 @@ function App() {
     // prevent the total from exceeding 100%
     let adjustment = 0;
     if (total > 1) {
-      adjustment = (total - 1).toFixed(2);
+      adjustment = total - 1;
     }
 
-    setState({...state, [key]: value - adjustment});
+    // eliminate any trailing digits from float weirdness
+    const rounded = Math.round((value - adjustment) * 100 + Number.EPSILON) / 100;
+    setState({...state, [key]: rounded});
   };
 
   return (
