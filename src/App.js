@@ -3,6 +3,7 @@ import './App.css';
 import MultiSlider from './components/MultiSlider';
 
 function App() {
+  const [sliderAtLimit, setSliderAtLimit] = React.useState(null);
   const [state, setState] = React.useState({
     alpha: 0.1,
     beta: 0.2,
@@ -23,6 +24,9 @@ function App() {
     let adjustment = 0;
     if (total > 1) {
       adjustment = total - 1;
+      setSliderAtLimit(key);
+    } else {
+      setSliderAtLimit(null);
     }
 
     // eliminate any trailing digits from float weirdness
@@ -32,7 +36,7 @@ function App() {
 
   return (
     <div className="App">
-      <MultiSlider data={state} onChange={handleOnChange} />
+      <MultiSlider data={state} onChange={handleOnChange} sliderAtLimit={sliderAtLimit} />
     </div>
   );
 }

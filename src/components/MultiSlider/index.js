@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 import Box from '@material-ui/core/Box';
 import Card from '@material-ui/core/Card';
 import Slider from '@material-ui/core/Slider';
@@ -17,7 +18,7 @@ import useStyles from './styles';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-export default function MultiSlider({data, onChange}) {
+export default function MultiSlider({data, onChange, sliderAtLimit}) {
   const classes = useStyles();
 
   const currentTotal = Object.values(data).reduce(
@@ -28,7 +29,7 @@ export default function MultiSlider({data, onChange}) {
     name: key,
     value: data[key],
   }));
-  chartData.push({name: '', value: 1 - currentTotal});
+  chartData.unshift({name: '', value: 1 - currentTotal});
 
   const getChartLabel = ({index}) => {
     if (chartData[index].value > 0) {
@@ -38,7 +39,8 @@ export default function MultiSlider({data, onChange}) {
 
   const getChartSection = (entry, index) => {
     let color = COLORS[index % COLORS.length];
-    if (index === chartData.length - 1) {
+    if (index === 0) {
+        // empty section
         color = '#eee';
     }
 
@@ -73,6 +75,7 @@ export default function MultiSlider({data, onChange}) {
               {Object.keys(data).map(key => (
                 <Box>
                   <Slider
+                    className={clsx({ [classes.sliderLimit]: key === sliderAtLimit })}
                     orientation="vertical"
                     aria-labelledby={`multi-slider-${key}`}
                     value={data[key] * 100}
@@ -95,6 +98,8 @@ export default function MultiSlider({data, onChange}) {
                 <Pie
                   labelLine={false}
                   label={getChartLabel}
+                  startAngle={-270}
+                  endAngle={90}
                   innerRadius={80}
                   outerRadius={100}
                   data={chartData}
@@ -119,6 +124,20 @@ export default function MultiSlider({data, onChange}) {
               {currentTotal >= 1 && <DoneOutlineTwoToneIcon />}
             </ListItemIcon>
             All sliders must sum to 100%
+          </ListItem>
+
+          <ListItem>
+            <ListItemIcon>
+              {currentTotal < 1 && <DoneOutlineTwoToneIcon />}
+            </ListItemIcon>
+            An empty section is added to the chart if the sliders do not sum to 100%
+          </ListItem>
+
+          <ListItem>
+            <ListItemIcon>
+              {sliderAtLimit && <DoneOutlineTwoToneIcon />}
+            </ListItemIcon>
+            Sliders will wobble if attempting to exceed a sum of 100%
           </ListItem>
         </List>
       </Card>
