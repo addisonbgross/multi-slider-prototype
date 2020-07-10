@@ -114,10 +114,10 @@ export default function MultiSlider({
                     }
                     onDoubleClick={() => onDoubleClick(key)}
                   />
-                  <Typography variant="body1" id={`multi-slider-${key}`}>
+                  <Typography variant="body2" id={`multi-slider-${key}`}>
                     {key}
                   </Typography>
-                  <Typography variant="body1">
+                  <Typography variant="body2">
                     {Math.trunc(data[key] * 100)}%
                   </Typography>
                 </Box>
