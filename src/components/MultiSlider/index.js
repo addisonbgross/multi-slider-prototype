@@ -16,9 +16,22 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 import useStyles from './styles';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = [
+  '#0088FE',
+  '#00C49F',
+  '#FFBB28',
+  '#FF8042',
+  '#904098',
+  '#00F6FF',
+];
 
-export default function MultiSlider({data, onChange, onDoubleClick, sliderAtLimit, rules}) {
+export default function MultiSlider({
+  data,
+  onChange,
+  onDoubleClick,
+  sliderAtLimit,
+  rules,
+}) {
   const classes = useStyles();
 
   const currentTotal = Object.values(data).reduce(
@@ -31,9 +44,23 @@ export default function MultiSlider({data, onChange, onDoubleClick, sliderAtLimi
   }));
   chartData.unshift({name: '', value: 1 - currentTotal});
 
-  const getChartLabel = ({index}) => {
-    if (chartData[index].value > 0) {
-      return chartData[index].name;
+  const getChartLabel = ({cy, midAngle, outerRadius, percent, index}) => {
+    if (index !== 0 && chartData[index].value > 0) {
+      const RADIAN = Math.PI / 180;
+      const radius = outerRadius * 1.4;
+      const x = radius * Math.cos(-midAngle * RADIAN);
+      const y = cy * 0.85 + radius * Math.sin(-midAngle * RADIAN);
+      const value = Math.trunc(percent * 100);
+      return (
+        <foreignObject x={x} y={y} className={classes.chartLabelWrapper}>
+          <div
+            xmlns="http://www.w3.org/1999/xhtml"
+            className={classes.chartLabel}>
+            <Typography variant="body2">{chartData[index].name}</Typography>
+            <Typography variant="body2">{value + '%'}</Typography>
+          </div>
+        </foreignObject>
+      );
     }
   };
 

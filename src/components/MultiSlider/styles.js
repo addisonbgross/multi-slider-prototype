@@ -71,6 +71,24 @@ export default makeStyles(theme => ({
     height: 70,
     marginLeft: -45,
     marginTop: -35,
+
+    '& > h4': {
+      fontWeight: 'bold',
+    }
+  },
+  chartLabelWrapper: {
+    pointerEvents: 'none', // to prevent labels from blocking clicks on the rightmost slider
+    overflow: 'visible',
+    width: '100%',
+    height: '100%',
+    '& *': {
+      textAlign: 'center',
+    },
+  },
+  chartLabel: {
+    '& > p:first-child': {
+      fontWeight: 'bold',
+    },
   },
   rules: {
     '& > *': {
