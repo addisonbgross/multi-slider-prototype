@@ -182,7 +182,7 @@ export default function MultiSlider({
             <ListItemIcon>
               {rules.doubleClicked && <DoneOutlineTwoToneIcon />}
             </ListItemIcon>
-            Double clicking a slider will set that region to 100%
+            Double clicking a slider will set it to 100%
           </ListItem>
         </List>
       </Card>
