@@ -5,7 +5,7 @@ import MultiSlider from './components/MultiSlider';
 function App() {
   // purely for rules, can be deleted
   const [rules, setRules] = React.useState({
-    total: 0,
+    total: 1,
     sliderAtLimit: null,
     doubleClicked: null,
   });
